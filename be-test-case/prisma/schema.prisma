@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Members {
+  code   String   @id @unique // example: "M001"
+  name   String // example: "Angga"
+  Borrow Borrow[]
+}
+
+model Books {
+  code   String   @id @unique // example: "JK-45"
+  title  String // example: "Harry Potter"
+  author String // example: "J.K. Rowling"
+  stock  Int // example: 1
+  Borrow Borrow[]
+}
+
+model Borrow {
+  id         Int       @id @default(autoincrement())
+  members    Members   @relation(fields: [memberCode], references: [code])
+  memberCode String
+  books      Books     @relation(fields: [bookCode], references: [code])
+  bookCode   String
+  borrowedAt DateTime
+  returnedAt DateTime?
+}
